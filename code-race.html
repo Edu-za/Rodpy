@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PyPals Race — 2 Player Python Duel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #12231c;
+      --leaf: #1f7a4c;
+      --leaf-deep: #0f4d32;
+      --sun: #f4b942;
+      --sky: #2a9d8f;
+      --coral: #e76f51;
+      --cream: #f3faf5;
+      --panel: #ffffff;
+      --code-bg: #143528;
+      --code-fg: #e8fff2;
+      --p1: #1f7a4c;
+      --p2: #c45c26;
+      --mist: rgba(18, 35, 28, 0.1);
+      --shadow: 0 16px 36px rgba(15, 77, 50, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 0% 0%, #b8f0c8 0%, transparent 55%),
+        radial-gradient(800px 420px at 100% 10%, #ffe0c2 0%, transparent 50%),
+        linear-gradient(180deg, #eaf8ef 0%, var(--cream) 100%);
+      line-height: 1.45;
+    }
+
+    .wrap { width: min(1100px, calc(100% - 1.5rem)); margin: 0 auto; }
+
+    .hidden { display: none !important; }
+
+    /* Screens */
+    .screen { padding: 1.25rem 0 2.5rem; min-height: 100vh; }
+
+    .brand {
+      font-family: "Baloo 2", cursive;
+      font-weight: 800;
+      font-size: 1.4rem;
+    }
+    .brand span { color: var(--sun); }
+
+    /* Lobby */
+    .lobby-hero {
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      min-height: 42vh;
+      margin: 0.75rem 0 1.5rem;
+      background:
+        linear-gradient(135deg, rgba(15,77,50,0.55), rgba(196,92,38,0.45)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600'%3E%3Crect fill='%231f7a4c' width='1200' height='600'/%3E%3Ccircle cx='200' cy='120' r='80' fill='%23f4b942' opacity='.4'/%3E%3Ccircle cx='980' cy='160' r='120' fill='%23e76f51' opacity='.35'/%3E%3Cpath d='M0 380 Q300 300 600 390 T1200 360 V600 H0Z' fill='%230f4d32' opacity='.5'/%3E%3C/svg%3E")
+        center / cover;
+      color: #fff;
+      display: grid;
+      align-items: end;
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.6s ease;
+    }
+
+    .lobby-hero h1 {
+      font-family: "Baloo 2", cursive;
+      font-size: clamp(2.2rem, 6vw, 3.6rem);
+      line-height: 0.95;
+      margin: 0 0 0.5rem;
+      max-width: 14ch;
+      text-shadow: 0 3px 16px rgba(0,0,0,0.25);
+    }
+
+    .lobby-hero p {
+      margin: 0;
+      max-width: 34ch;
+      font-size: 1.05rem;
+      opacity: 0.95;
+    }
+
+    .setup {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 720px) {
+      .setup { grid-template-columns: 1fr; }
+    }
+
+    .player-card {
+      background: var(--panel);
+      border-radius: 20px;
+      padding: 1.15rem 1.2rem;
+      box-shadow: var(--shadow);
+      border: 3px solid transparent;
+      animation: rise 0.5s ease both;
+    }
+    .player-card.p1 { border-color: var(--p1); }
+    .player-card.p2 { border-color: var(--p2); animation-delay: 0.08s; }
+
+    .player-card h2 {
+      font-family: "Baloo 2", cursive;
+      margin: 0 0 0.65rem;
+      font-size: 1.35rem;
+    }
+    .player-card.p1 h2 { color: var(--p1); }
+    .player-card.p2 h2 { color: var(--p2); }
+
+    label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.35rem; }
+
+    input[type="text"] {
+      width: 100%;
+      font: inherit;
+      font-size: 1.05rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 12px;
+      border: 2px solid #cfe3d7;
+      background: #f7fcf9;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--leaf);
+      box-shadow: 0 0 0 3px rgba(31,122,76,0.15);
+    }
+
+    .btn {
+      border: 0;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 0.85rem 1.4rem;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--sun);
+      color: var(--ink);
+      font-size: 1.1rem;
+      box-shadow: 0 10px 22px rgba(244,185,66,0.4);
+      width: 100%;
+      margin-top: 0.25rem;
+    }
+    .btn-ghost {
+      background: #fff;
+      border: 2px solid var(--mist);
+      color: var(--ink);
+    }
+    .btn-p1 { background: var(--p1); color: #fff; }
+    .btn-p2 { background: var(--p2); color: #fff; }
+
+    .how {
+      margin-top: 1rem;
+      padding: 1rem 1.15rem;
+      background: rgba(255,255,255,0.7);
+      border-radius: 16px;
+      font-size: 0.95rem;
+    }
+    .how strong { color: var(--leaf-deep); }
+
+    /* Game HUD */
+    .hud {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .scores {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .score-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      font-weight: 700;
+    }
+    .score-pill .dot {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .score-pill.p1 .dot { background: var(--p1); }
+    .score-pill.p2 .dot { background: var(--p2); }
+    .score-pill .pts {
+      font-family: "Baloo 2", cursive;
+      font-size: 1.25rem;
+      min-width: 1.2ch;
+    }
+
+    .round-tag {
+      font-family: "Baloo 2", cursive;
+      font-size: 1.15rem;
+      background: var(--code-bg);
+      color: #fff;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+    }
+
+    /* Race track */
+    .track-board {
+      background: #143528;
+      border-radius: 22px;
+      padding: 1rem 1rem 1.15rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .track-board h3 {
+      margin: 0 0 0.75rem;
+      color: #c8ebd8;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .lane {
+      position: relative;
+      height: 52px;
+      margin-bottom: 0.55rem;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,0.06) 0 28px,
+        rgba(255,255,255,0.02) 28px 56px
+      );
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .lane:last-child { margin-bottom: 0; }
+    .finish {
+      position: absolute;
+      right: 10px;
+      top: 6px;
+      bottom: 6px;
+      width: 10px;
+      background: repeating-linear-gradient(
+        #fff 0 4px,
+        #12231c 4px 8px
+      );
+      border-radius: 2px;
+      opacity: 0.85;
+    }
+    .racer {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.85rem;
+      transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35));
+      z-index: 2;
+    }
+    .racer.bump { animation: bump 0.35s ease; }
+    @keyframes bump {
+      0%, 100% { transform: translateY(-50%) scale(1); }
+      40% { transform: translateY(-60%) scale(1.15); }
+    }
+
+    /* Challenge */
+    .challenge {
+      background: #fff;
+      border-radius: 22px;
+      padding: 1.2rem 1.25rem 1.35rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+      animation: rise 0.4s ease;
+    }
+    .challenge .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #d8f3e4;
+      color: var(--leaf-deep);
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      margin-bottom: 0.45rem;
+    }
+    .challenge h2 {
+      font-family: "Baloo 2", cursive;
+      margin: 0 0 0.45rem;
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+    }
+    .challenge .teach { margin: 0 0 0.75rem; color: rgba(18,35,28,0.75); }
+
+    pre.code {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      border-radius: 14px;
+      padding: 0.95rem 1rem;
+      overflow-x: auto;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .kw { color: #7dd3a7; }
+    .str { color: #f4b942; }
+    .cm { color: #8fb5a2; }
+    .num { color: #7ec8e3; }
+
+    .arena {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+    @media (max-width: 720px) {
+      .arena { grid-template-columns: 1fr; }
+    }
+
+    .pad {
+      border-radius: 18px;
+      padding: 0.95rem;
+      border: 3px solid;
+      background: #f7fcf9;
+    }
+    .pad.p1 { border-color: var(--p1); }
+    .pad.p2 { border-color: var(--p2); }
+    .pad.locked { opacity: 0.55; pointer-events: none; }
+    .pad.winner {
+      animation: winFlash 0.6s ease;
+      background: #fff8e6;
+    }
+
+    .pad h3 {
+      margin: 0 0 0.5rem;
+      font-family: "Baloo 2", cursive;
+      font-size: 1.2rem;
+    }
+    .pad.p1 h3 { color: var(--p1); }
+    .pad.p2 h3 { color: var(--p2); }
+
+    .pad input {
+      font-family: "IBM Plex Mono", monospace;
+      margin-bottom: 0.55rem;
+    }
+    .pad .btn { width: 100%; }
+    .fb {
+      min-height: 1.25rem;
+      margin-top: 0.45rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .fb.ok { color: var(--leaf-deep); }
+    .fb.no { color: #b42318; }
+
+    .banner {
+      text-align: center;
+      font-family: "Baloo 2", cursive;
+      font-size: 1.35rem;
+      min-height: 1.6rem;
+      margin: 0.75rem 0 0;
+    }
+
+    /* Winner screen */
+    .winner-panel {
+      text-align: center;
+      background: #fff;
+      border-radius: 28px;
+      padding: 2.5rem 1.5rem;
+      box-shadow: var(--shadow);
+      margin-top: 2rem;
+      animation: rise 0.55s ease;
+    }
+    .winner-panel h1 {
+      font-family: "Baloo 2", cursive;
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin: 0 0 0.5rem;
+    }
+    .trophy {
+      font-size: 4rem;
+      display: block;
+      animation: floaty 2s ease-in-out infinite;
+    }
+    .winner-panel .final-scores {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 1.25rem 0 1.5rem;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .confetti {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: 50;
+    }
+    .confetti i {
+      position: absolute;
+      top: -12px;
+      width: 10px;
+      height: 14px;
+      border-radius: 2px;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(520deg); opacity: 0.85; }
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes winFlash {
+      0%, 100% { box-shadow: none; }
+      50% { box-shadow: 0 0 0 6px rgba(244,185,66,0.45); }
+    }
+
+    .hotkeys {
+      font-size: 0.8rem;
+      color: rgba(18,35,28,0.55);
+      margin-top: 0.35rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem 0 2rem;
+      color: rgba(18,35,28,0.5);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="confetti" class="confetti hidden" aria-hidden="true"></div>
+
+  <!-- LOBBY -->
+  <section id="lobby" class="screen">
+    <div class="wrap">
+      <div class="brand"><a href="index.html" style="color:inherit;text-decoration:none">Py<span>Pals</span> Race</a> · <a href="index.html" style="color:#f4b942;text-decoration:none;font-size:0.9rem">Arcade</a></div>
+      <div class="lobby-hero">
+        <div>
+          <h1>Snake vs Snake coding duel</h1>
+          <p>Two players. One keyboard. First correct Python answer wins the round. First to 5 wins the race!</p>
+        </div>
+      </div>
+
+      <div class="setup">
+        <div class="player-card p1">
+          <h2>Player 1 · Green snake</h2>
+          <label for="name1">Name</label>
+          <input id="name1" type="text" maxlength="12" value="Ada" />
+          <p class="hotkeys">Shortcut: <strong>Enter</strong> in your box</p>
+        </div>
+        <div class="player-card p2">
+          <h2>Player 2 · Orange snake</h2>
+          <label for="name2">Name</label>
+          <input id="name2" type="text" maxlength="12" value="Byte" />
+          <p class="hotkeys">Same laptop — race fair!</p>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="startBtn" type="button">Start the race →</button>
+
+      <div class="how">
+        <strong>How to play:</strong> Read the tip and example. Both of you type the answer at the same time.
+        First correct submit scores a point and your snake slides forward. Wrong answers don’t lock you out — keep trying!
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="screen hidden">
+    <div class="wrap">
+      <div class="hud">
+        <div class="brand"><a href="index.html" style="color:inherit;text-decoration:none">Py<span>Pals</span> Race</a> · <a href="index.html" style="color:#f4b942;text-decoration:none;font-size:0.9rem">Arcade</a></div>
+        <div class="round-tag" id="roundTag">Round 1 / 8</div>
+        <div class="scores">
+          <div class="score-pill p1"><span class="dot"></span><span id="label1">Ada</span> <span class="pts" id="score1">0</span></div>
+          <div class="score-pill p2"><span class="dot"></span><span id="label2">Byte</span> <span class="pts" id="score2">0</span></div>
+        </div>
+      </div>
+
+      <div class="track-board">
+        <h3>Race to the finish · first to 5 points</h3>
+        <div class="lane">
+          <span class="racer" id="racer1" style="left: 8px;">🐍</span>
+          <div class="finish" title="Finish"></div>
+        </div>
+        <div class="lane">
+          <span class="racer" id="racer2" style="left: 8px;">🧡</span>
+          <div class="finish" title="Finish"></div>
+        </div>
+      </div>
+
+      <div class="challenge" id="challengeBox">
+        <div class="badge" id="topicBadge">Print</div>
+        <h2 id="promptTitle">Challenge</h2>
+        <p class="teach" id="promptTeach"></p>
+        <pre class="code" id="promptCode"></pre>
+
+        <div class="arena">
+          <div class="pad p1" id="pad1">
+            <h3 id="padTitle1">Ada</h3>
+            <input id="ans1" type="text" autocomplete="off" spellcheck="false" placeholder="Type Python here…" />
+            <button class="btn btn-p1" type="button" data-player="1">Submit!</button>
+            <div class="fb" id="fb1"></div>
+          </div>
+          <div class="pad p2" id="pad2">
+            <h3 id="padTitle2">Byte</h3>
+            <input id="ans2" type="text" autocomplete="off" spellcheck="false" placeholder="Type Python here…" />
+            <button class="btn btn-p2" type="button" data-player="2">Submit!</button>
+            <div class="fb" id="fb2"></div>
+          </div>
+        </div>
+        <p class="banner" id="banner"></p>
+      </div>
+
+      <button class="btn btn-ghost" id="quitBtn" type="button">Back to lobby</button>
+    </div>
+  </section>
+
+  <!-- WINNER -->
+  <section id="winner" class="screen hidden">
+    <div class="wrap">
+      <div class="winner-panel">
+        <span class="trophy" aria-hidden="true">🏆</span>
+        <h1 id="winnerTitle">Winner!</h1>
+        <p id="winnerSub">Great coding duel.</p>
+        <div class="final-scores">
+          <div><span id="final1Name">Ada</span>: <strong id="final1">0</strong></div>
+          <div><span id="final2Name">Byte</span>: <strong id="final2">0</strong></div>
+        </div>
+        <button class="btn btn-primary" id="againBtn" type="button" style="max-width:280px">Play again</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>PyPals Race · 2-player hot-seat · open index.html in a browser</footer>
+
+  <script>
+    const WIN_SCORE = 5;
+    const TRACK_MAX = 82; // percent-ish left offset
+
+    const ROUNDS = [
+      {
+        topic: "Print",
+        title: "Say it loud with print()",
+        teach: "print() shows text. Put words inside quotes.",
+        code: '<span class="cm"># Example</span>\n<span class="kw">print</span>(<span class="str">"Hello, PyPal!"</span>)',
+        hint: 'print("Hi")',
+        check: (s) => /^print\s*\(\s*(["'])I love coding\1\s*\)$/i.test(s.trim()),
+        ask: 'Type one line that prints I love coding',
+      },
+      {
+        topic: "Print",
+        title: "Print your victory chant",
+        teach: "Single or double quotes both work — just match them.",
+        code: '<span class="kw">print</span>(<span class="str">\'Go snakes!\'</span>)',
+        check: (s) => /^print\s*\(\s*(["'])Go snakes!\1\s*\)$/i.test(s.trim()),
+        ask: 'Print exactly: Go snakes!',
+      },
+      {
+        topic: "Variables",
+        title: "Name a pet box",
+        teach: "A variable stores a value. Use name = value",
+        code: 'pet = <span class="str">"cat"</span>\n<span class="kw">print</span>(pet)',
+        check: (s) => /^pet\s*=\s*(["'])snake\1$/i.test(s.trim()),
+        ask: 'Make pet equal to "snake"',
+      },
+      {
+        topic: "Variables",
+        title: "Store a high score",
+        teach: "Numbers do not need quotes.",
+        code: 'score = <span class="num">10</span>',
+        check: (s) => /^score\s*=\s*100$/i.test(s.trim().replace(/\s+/g, " ").trim()),
+        ask: "Set score to 100 (one line)",
+      },
+      {
+        topic: "Math",
+        title: "Add like a coder",
+        teach: "Python can do math with + - * /",
+        code: '<span class="kw">print</span>(<span class="num">2</span> + <span class="num">3</span>)  <span class="cm"># shows 5</span>',
+        check: (s) => /^print\s*\(\s*7\s*\+\s*5\s*\)$/i.test(s.trim()),
+        ask: "Print the sum of 7 + 5 using print()",
+      },
+      {
+        topic: "If",
+        title: "Choose a path",
+        teach: "if checks a condition. Greater than is >",
+        code: '<span class="kw">if</span> score &gt; <span class="num">5</span>:\n    <span class="kw">print</span>(<span class="str">"Win"</span>)',
+        check: (s) => s.trim() === ">",
+        ask: 'Fill the blank: if age __ 12:   (type the symbol)',
+      },
+      {
+        topic: "If",
+        title: "Equal or not?",
+        teach: "To compare equality in Python use == (two equals).",
+        code: '<span class="kw">if</span> name == <span class="str">"Ada"</span>:\n    <span class="kw">print</span>(<span class="str">"Hi Ada"</span>)',
+        check: (s) => s.trim() === "==",
+        ask: "What symbol checks if two things are equal?",
+      },
+      {
+        topic: "Boss",
+        title: "Boss round!",
+        teach: "Combine a variable and a print.",
+        code: 'msg = <span class="str">"Winner"</span>\n<span class="kw">print</span>(msg)',
+        check: (s) => {
+          const t = s.trim();
+          return /^msg\s*=\s*(["'])Winner\1$/i.test(t) || /^print\s*\(\s*msg\s*\)$/i.test(t);
+        },
+        ask: 'Either set msg = "Winner"  OR  print(msg)',
+      },
+    ];
+
+    const state = {
+      names: ["Ada", "Byte"],
+      scores: [0, 0],
+      round: 0,
+      locked: false,
+      order: [],
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function show(id) {
+      ["lobby", "game", "winner"].forEach((s) => $(s).classList.toggle("hidden", s !== id));
+    }
+
+    function updateTrack() {
+      [0, 1].forEach((i) => {
+        const pct = Math.min(TRACK_MAX, (state.scores[i] / WIN_SCORE) * TRACK_MAX);
+        const el = $("racer" + (i + 1));
+        el.style.left = `calc(8px + ${pct}% - ${pct * 0.08}px)`;
+        el.classList.remove("bump");
+        void el.offsetWidth;
+        if (state.scores[i] > 0) el.classList.add("bump");
+      });
+    }
+
+    function updateScores() {
+      $("score1").textContent = state.scores[0];
+      $("score2").textContent = state.scores[1];
+      updateTrack();
+    }
+
+    function loadRound() {
+      state.locked = false;
+      const r = state.order[state.round];
+      $("roundTag").textContent = `Round ${state.round + 1} / ${state.order.length}`;
+      $("topicBadge").textContent = r.topic;
+      $("promptTitle").textContent = r.title;
+      $("promptTeach").textContent = r.teach + " — " + r.ask;
+      $("promptCode").innerHTML = r.code;
+      $("banner").textContent = "Ready… set… CODE!";
+      $("ans1").value = "";
+      $("ans2").value = "";
+      $("fb1").textContent = "";
+      $("fb2").textContent = "";
+      $("fb1").className = "fb";
+      $("fb2").className = "fb";
+      $("pad1").classList.remove("locked", "winner");
+      $("pad2").classList.remove("locked", "winner");
+      $("ans1").focus();
+    }
+
+    function burstConfetti() {
+      const box = $("confetti");
+      box.classList.remove("hidden");
+      box.innerHTML = "";
+      const colors = ["#f4b942", "#1f7a4c", "#e76f51", "#2a9d8f", "#fff"];
+      for (let i = 0; i < 48; i++) {
+        const bit = document.createElement("i");
+        bit.style.left = Math.random() * 100 + "%";
+        bit.style.background = colors[i % colors.length];
+        bit.style.animationDuration = 1.2 + Math.random() * 1.4 + "s";
+        bit.style.animationDelay = Math.random() * 0.3 + "s";
+        box.appendChild(bit);
+      }
+      setTimeout(() => box.classList.add("hidden"), 2800);
+    }
+
+    function endGame() {
+      const [a, b] = state.scores;
+      let title, sub;
+      if (a > b) {
+        title = state.names[0] + " wins!";
+        sub = "Green snake takes the crown.";
+      } else if (b > a) {
+        title = state.names[1] + " wins!";
+        sub = "Orange snake takes the crown.";
+      } else {
+        title = "It's a tie!";
+        sub = "Both PyPals coded like champs.";
+      }
+      $("winnerTitle").textContent = title;
+      $("winnerSub").textContent = sub;
+      $("final1Name").textContent = state.names[0];
+      $("final2Name").textContent = state.names[1];
+      $("final1").textContent = a;
+      $("final2").textContent = b;
+      burstConfetti();
+      show("winner");
+    }
+
+    function nextAfterWin() {
+      if (state.scores[0] >= WIN_SCORE || state.scores[1] >= WIN_SCORE) {
+        endGame();
+        return;
+      }
+      state.round += 1;
+      if (state.round >= state.order.length) {
+        endGame();
+        return;
+      }
+      setTimeout(loadRound, 900);
+    }
+
+    function submit(player) {
+      if (state.locked) return;
+      const idx = player - 1;
+      const input = $("ans" + player);
+      const fb = $("fb" + player);
+      const round = state.order[state.round];
+      const ok = round.check(input.value);
+
+      if (!ok) {
+        fb.className = "fb no";
+        fb.textContent = "Nope — try again!";
+        input.classList.remove("bump");
+        return;
+      }
+
+      state.locked = true;
+      state.scores[idx] += 1;
+      fb.className = "fb ok";
+      fb.textContent = "Correct! +1";
+      $("pad" + player).classList.add("winner");
+      $("pad" + (player === 1 ? 2 : 1)).classList.add("locked");
+      $("banner").textContent = state.names[idx] + " wins the round!";
+      updateScores();
+      nextAfterWin();
+    }
+
+    function startGame() {
+      const n1 = $("name1").value.trim() || "Player 1";
+      const n2 = $("name2").value.trim() || "Player 2";
+      state.names = [n1.slice(0, 12), n2.slice(0, 12)];
+      state.scores = [0, 0];
+      state.round = 0;
+      state.order = shuffle(ROUNDS);
+      $("label1").textContent = state.names[0];
+      $("label2").textContent = state.names[1];
+      $("padTitle1").textContent = state.names[0];
+      $("padTitle2").textContent = state.names[1];
+      $("racer1").textContent = "🐍";
+      $("racer2").textContent = "🦊";
+      updateScores();
+      show("game");
+      loadRound();
+    }
+
+    $("startBtn").addEventListener("click", startGame);
+    $("againBtn").addEventListener("click", () => {
+      show("lobby");
+    });
+    $("quitBtn").addEventListener("click", () => show("lobby"));
+
+    document.querySelectorAll("button[data-player]").forEach((btn) => {
+      btn.addEventListener("click", () => submit(Number(btn.dataset.player)));
+    });
+
+    $("ans1").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") submit(1);
+    });
+    $("ans2").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") submit(2);
+    });
+  </script>
+</body>
+</html>

@@ -1,21 +1,30 @@
-# PyPals Race
+# Rodpy Arcade
 
-A **2-player** kid-friendly Python coding duel (same laptop).
+Kid-friendly **math + Python** mini-games (static HTML).
 
-## Play
+## Open
 
-Open [`index.html`](index.html) in your browser.
+Open [`index.html`](index.html) in a browser for the full arcade menu.
 
-1. Enter two player names  
-2. Hit **Start the race**  
-3. Both type the Python answer — **first correct submit wins the round**  
-4. First snake to **5 points** wins  
+## Games
 
-## What’s inside
+### 2-player races
+- [PyPals Code Race](code-race.html) — Python `print`, variables, `if`
+- [Times Table Turbo](tables.html)
+- [Fraction Frenzy](fractions.html)
+- [Integer Island](integers.html)
+- [Percent Sprint](percent.html)
+- [Algebra Duel](algebra.html)
 
-- Hot-seat race (one keyboard, two players)
-- Snake track progress bar
-- Randomized rounds: `print`, variables, math, `if`, boss round
-- Confetti on victory
+### Solo practice
+- [Number Bond Builder](bonds.html)
+- [Shape Sorter](shapes.html)
+- [Angle Archer](angles.html)
+- [Coordinate Quest](coordinates.html)
+- [Pattern Prophet](patterns.html)
+- [Market Math](market.html) — ZMW change
+- [Travel Graph Dash](travel.html)
+- [Earth Geometry](earth.html)
+- [LP Region Rush](lp.html)
 
-No install — plain HTML, CSS, and JavaScript.
+No install. No build step.
