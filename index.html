@@ -3,438 +3,508 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Edu-za/Rodpy · Arcade</title>
+  <title>Rodpy — Learn math & Python by playing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@450;500&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #ffffff;
       --canvas: #f6f8fa;
       --border: #d0d7de;
-      --border-muted: #d8dee4;
       --text: #1f2328;
       --muted: #656d76;
       --link: #0969da;
-      --accent: #1f883d;
-      --accent-hover: #1a7f37;
-      --header: #f6f8fa;
-      --chip: #afb8c133;
-      --success-bg: #dafbe1;
-      --success: #1a7f37;
+      --green: #1f883d;
+      --green-hover: #1a7f37;
+      --green-fg: #aff5b4;
       --radius: 6px;
-      --mono: "IBM Plex Mono", ui-monospace, monospace;
+      --shadow: 0 1px 0 rgba(31, 35, 40, 0.04);
       --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
 
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: var(--sans);
       color: var(--text);
       background: var(--bg);
-      font-size: 14px;
+      font-size: 16px;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
     a { color: var(--link); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    code {
+      font-family: var(--mono);
+      font-size: 0.9em;
+      background: rgba(175, 184, 193, 0.2);
+      padding: 0.15em 0.4em;
+      border-radius: 6px;
+    }
 
-    /* Top nav — GitHub-ish */
-    .topnav {
-      background: var(--header);
+    .wrap { width: min(1100px, calc(100% - 2rem)); margin: 0 auto; }
+
+    /* —— Header (GitHub product chrome) —— */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: saturate(180%) blur(8px);
       border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
+    }
+    .nav {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 1rem;
+      padding: 0.75rem 0;
       flex-wrap: wrap;
     }
     .logo {
-      width: 32px; height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+    }
+    .logo:hover { text-decoration: none; color: var(--text); }
+    .logo-mark {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: var(--text);
       color: #fff;
-      display: grid; place-items: center;
-      font-weight: 700; font-size: 12px;
-      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
     }
-    .repo-path {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 14px; flex-wrap: wrap;
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      margin-left: 0.5rem;
+      flex-wrap: wrap;
     }
-    .repo-path a { font-weight: 600; }
-    .repo-path .sep { color: var(--muted); }
-    .repo-path strong { font-weight: 600; }
-    .pill-public {
-      font-size: 12px; font-weight: 500;
-      border: 1px solid var(--border);
-      border-radius: 2em; padding: 0 7px; color: var(--muted);
+    .nav-links a {
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 500;
     }
-    .top-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav-links a:hover { color: var(--link); }
+    .nav-cta { margin-left: auto; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
     .btn {
-      appearance: none; border: 1px solid var(--border);
-      background: var(--canvas); color: var(--text);
-      border-radius: var(--radius); padding: 5px 12px;
-      font: inherit; font-weight: 500; font-size: 12px;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      font: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.25;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--canvas);
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: var(--shadow);
+      transition: background 0.12s ease, border-color 0.12s ease;
     }
-    .btn:hover { background: #eef1f4; text-decoration: none; }
+    .btn:hover { background: #eef1f4; text-decoration: none; color: var(--text); }
     .btn-primary {
-      background: var(--accent); border-color: rgba(27,31,36,.15);
+      background: var(--green);
+      border-color: rgba(27, 31, 36, 0.15);
       color: #fff;
     }
-    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:hover { background: var(--green-hover); color: #fff; }
+    .btn-lg { padding: 0.65rem 1.15rem; font-size: 0.95rem; }
 
-    /* Under-nav tabs */
-    .tabs {
+    /* —— Hero —— */
+    .hero {
+      padding: 4.5rem 0 3.25rem;
       border-bottom: 1px solid var(--border);
-      padding: 0 16px;
-      display: flex; gap: 4px; overflow-x: auto;
+      background:
+        radial-gradient(900px 320px at 80% -10%, rgba(31, 136, 61, 0.08), transparent 60%),
+        linear-gradient(180deg, var(--canvas) 0%, var(--bg) 70%);
     }
-    .tab {
-      padding: 10px 12px; color: var(--text); font-weight: 500;
-      border-bottom: 2px solid transparent; white-space: nowrap;
-    }
-    .tab:hover { color: var(--text); text-decoration: none; border-bottom-color: var(--border); }
-    .tab.active { border-bottom-color: #fd8c73; font-weight: 600; }
-    .tab .count {
-      background: var(--chip); border-radius: 2em; padding: 0 6px;
-      font-size: 12px; margin-left: 4px; color: var(--muted);
-    }
-
-    .page {
-      width: min(1280px, 100%);
-      margin: 0 auto;
-      padding: 16px;
+    .hero-grid {
       display: grid;
-      grid-template-columns: 1fr 296px;
-      gap: 24px;
-      align-items: start;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2.5rem;
+      align-items: center;
     }
-    @media (max-width: 900px) {
-      .page { grid-template-columns: 1fr; }
+    @media (max-width: 800px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-panel { order: -1; }
     }
-
-    /* Toolbar above files */
-    .toolbar {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      align-items: center; margin-bottom: 12px;
-    }
-    .branch {
-      display: inline-flex; align-items: center; gap: 6px;
-      border: 1px solid var(--border); background: var(--canvas);
-      border-radius: var(--radius); padding: 5px 12px; font-weight: 600; font-size: 12px;
-    }
-    .branch::before { content: ""; width: 14px; height: 14px;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23656d76' d='M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.5 2.5 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Z'/%3E%3C/svg%3E") center/contain no-repeat; }
-    .meta-links { color: var(--muted); font-size: 12px; display: flex; gap: 12px; }
-    .go-file {
-      flex: 1; min-width: 160px;
-      border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 5px 12px; background: #fff; color: var(--muted); font-size: 14px;
-    }
-    .go-file kbd {
-      float: right; border: 1px solid var(--border); border-radius: 4px;
-      padding: 0 4px; font-size: 11px; font-family: var(--sans);
-    }
-
-    /* Commit bar + file table */
-    .box {
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
       background: #fff;
+      border-radius: 999px;
+      padding: 0.2rem 0.65rem;
+      margin-bottom: 1rem;
     }
-    .commit-bar {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      align-items: center; justify-content: space-between;
-      padding: 10px 16px; background: var(--canvas);
-      border-bottom: 1px solid var(--border); font-size: 12px;
+    .hero h1 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      line-height: 1.15;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
     }
-    .commit-bar .who { display: flex; align-items: center; gap: 8px; min-width: 0; }
-    .avatar {
-      width: 20px; height: 20px; border-radius: 50%;
-      background: #1f883d; color: #fff; font-size: 10px; font-weight: 700;
-      display: grid; place-items: center;
+    .hero .lede {
+      margin: 0 0 1.5rem;
+      color: var(--muted);
+      font-size: 1.125rem;
+      max-width: 36ch;
     }
-    .commit-msg { font-weight: 600; color: var(--text); }
-    .commit-msg:hover { color: var(--link); text-decoration: none; }
-    .commit-meta { color: var(--muted); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
-    .files { list-style: none; margin: 0; padding: 0; }
-    .files li {
-      display: grid;
-      grid-template-columns: 20px minmax(120px, 1fr) minmax(0, 2fr) auto;
-      gap: 12px; align-items: center;
-      padding: 8px 16px; border-top: 1px solid var(--border-muted);
-      font-size: 14px;
-    }
-    .files li:first-child { border-top: 0; }
-    .files li:hover { background: #f6f8fa; }
-    .files .icon { color: var(--muted); width: 16px; height: 16px; }
-    .files .name { font-weight: 400; color: var(--link); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .files .name:hover { text-decoration: underline; }
-    .files .msg { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
-    .files .when { color: var(--muted); font-size: 12px; white-space: nowrap; justify-self: end; }
-
-    /* README */
-    .readme {
-      margin-top: 16px;
+    .hero-panel {
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(140, 149, 159, 0.12);
       overflow: hidden;
     }
-    .readme-head {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 8px 16px; background: var(--canvas); border-bottom: 1px solid var(--border);
-      font-weight: 600; font-size: 12px;
+    .hero-panel-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--canvas);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 500;
     }
-    .readme-body { padding: 24px 32px; }
-    @media (max-width: 600px) { .readme-body { padding: 16px; } }
-    .readme-body h1 {
-      margin: 0 0 12px; font-size: 32px; font-weight: 600;
-      border-bottom: 1px solid var(--border); padding-bottom: 8px;
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.r { background: #ff5f56; }
+    .dot.y { background: #ffbd2e; }
+    .dot.g { background: #27c93f; }
+    .hero-panel pre {
+      margin: 0;
+      padding: 1.1rem 1.15rem 1.25rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text);
+      background: #fff;
+      overflow-x: auto;
     }
-    .readme-body h2 {
-      margin: 24px 0 8px; font-size: 24px; font-weight: 600;
-      border-bottom: 1px solid var(--border); padding-bottom: 6px;
-    }
-    .readme-body p { margin: 0 0 12px; }
-    .readme-body ul, .readme-body ol { margin: 0 0 12px; padding-left: 2em; }
-    .readme-body code {
-      font-family: var(--mono); font-size: 85%;
-      background: rgba(175,184,193,.2); padding: .2em .4em; border-radius: 6px;
-    }
-    .readme-body .play-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 8px; margin: 12px 0 16px;
-    }
-    .play-grid a {
-      display: block; border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 10px 12px; color: var(--text); background: #fff;
-    }
-    .play-grid a:hover { border-color: var(--link); text-decoration: none; background: #f6f8fa; }
-    .play-grid strong { display: block; color: var(--link); }
-    .play-grid span { color: var(--muted); font-size: 12px; }
+    .tok-kw { color: #cf222e; }
+    .tok-fn { color: #8250df; }
+    .tok-str { color: #0a3069; }
+    .tok-cm { color: #6e7781; }
 
-    /* Sidebar */
-    .side h3 {
-      margin: 0 0 8px; font-size: 14px; font-weight: 600;
-      display: flex; justify-content: space-between; align-items: center;
+    /* —— Sections —— */
+    section { padding: 3rem 0; }
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
     }
-    .side section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-    .side section:last-child { border-bottom: 0; }
-    .side p, .side li { color: var(--muted); font-size: 12px; }
-    .side ul { list-style: none; margin: 0; padding: 0; }
-    .side li { display: flex; align-items: center; gap: 6px; margin: 6px 0; color: var(--text); font-size: 12px; }
-    .lang-bar { height: 8px; border-radius: 6px; overflow: hidden; background: #eee; display: flex; margin: 8px 0; }
-    .lang-bar i { display: block; height: 100%; }
-    .lang-html { background: #e34c26; flex: 92; }
-    .lang-js { background: #f1e05a; flex: 6; }
-    .lang-py { background: #3572a5; flex: 2; }
-    .topics { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-    .topic {
-      background: #ddf4ff; color: #0969da; border-radius: 2em;
-      padding: 0 10px; font-size: 12px; font-weight: 500;
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: -0.01em;
     }
-    .desc-edit { color: var(--muted); font-size: 12px; }
+    .section-head p {
+      margin: 0.25rem 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
 
-    .flash {
-      margin: 12px 16px 0; padding: 10px 14px;
-      background: var(--success-bg); color: var(--success);
-      border: 1px solid #4ac26b66; border-radius: var(--radius);
-      font-size: 13px;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
     }
+    .game {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.05rem 1.1rem;
+      background: #fff;
+      color: inherit;
+      text-decoration: none;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease;
+      min-height: 148px;
+    }
+    .game:hover {
+      border-color: #0969da66;
+      box-shadow: 0 0 0 1px #0969da22;
+      text-decoration: none;
+      color: inherit;
+    }
+    .game .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .game .icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      display: grid; place-items: center;
+      font-size: 1.15rem;
+    }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--green);
+      background: #dafbe1;
+      border: 1px solid #4ac26b66;
+      border-radius: 999px;
+      padding: 0.1rem 0.5rem;
+    }
+    .badge.solo {
+      color: var(--link);
+      background: #ddf4ff;
+      border-color: #54aeff66;
+    }
+    .game h3 {
+      margin: 0.15rem 0 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .game p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.875rem;
+      flex: 1;
+    }
+    .game .open {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--link);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 700px) { .split { grid-template-columns: 1fr; } }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.35rem;
+      background: var(--canvas);
+    }
+    .panel h3 { margin: 0 0 0.4rem; font-size: 1.05rem; }
+    .panel p { margin: 0; color: var(--muted); font-size: 0.925rem; }
+    .panel ol { margin: 0.75rem 0 0; padding-left: 1.2rem; color: var(--text); font-size: 0.925rem; }
+    .panel li { margin: 0.35rem 0; }
+
+    .cta-band {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      background: #fff;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .cta-band h2 { margin: 0 0 0.25rem; font-size: 1.35rem; }
+    .cta-band p { margin: 0; color: var(--muted); }
+
+    footer.site-footer {
+      border-top: 1px solid var(--border);
+      background: var(--canvas);
+      padding: 2rem 0;
+      margin-top: 1rem;
+    }
+    .foot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .foot a { color: var(--muted); }
+    .foot a:hover { color: var(--link); }
   </style>
 </head>
 <body>
-  <header class="topnav">
-    <div class="logo" title="Rodpy">R</div>
-    <div class="repo-path">
-      <a href="index.html">Edu-za</a>
-      <span class="sep">/</span>
-      <strong><a href="index.html">Rodpy</a></strong>
-      <span class="pill-public">Public</span>
-    </div>
-    <div class="top-actions">
-      <button class="btn" type="button" title="Watch">👁 Watch</button>
-      <button class="btn" type="button" title="Fork">🍴 Fork</button>
-      <button class="btn" type="button" title="Star">⭐ Star</button>
-      <a class="btn btn-primary" href="https://github.com/Edu-za/Rodpy" target="_blank" rel="noopener">Code ▾</a>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="logo" href="index.html">
+        <span class="logo-mark">R</span>
+        Rodpy
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#games">Games</a>
+        <a href="#how">How it works</a>
+        <a href="https://github.com/Edu-za/Rodpy" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn" href="https://github.com/Edu-za/Rodpy" target="_blank" rel="noopener">View source</a>
+        <a class="btn btn-primary" href="#games">Play now</a>
+      </div>
     </div>
   </header>
 
-  <nav class="tabs" aria-label="Repository">
-    <a class="tab active" href="index.html"><> Code</a>
-    <a class="tab" href="#readme">Issues <span class="count">0</span></a>
-    <a class="tab" href="#readme">Pull requests <span class="count">0</span></a>
-    <a class="tab" href="https://github.com/Edu-za/Rodpy/actions" target="_blank" rel="noopener">Actions</a>
-    <a class="tab" href="#about">About</a>
-  </nav>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Edu-za · open learning games</div>
+        <h1>Rodpy</h1>
+        <p class="lede">Race a friend through math and Python challenges — or practice solo. Clean, fast, no install.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="tables.html">Start Times Tables →</a>
+          <a class="btn btn-lg" href="code-race.html">Python race</a>
+        </div>
+      </div>
+      <div class="hero-panel" aria-hidden="true">
+        <div class="hero-panel-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          challenge.py
+        </div>
+        <pre><span class="tok-cm"># First correct answer wins the round</span>
+<span class="tok-kw">print</span>(<span class="tok-str">"I love coding"</span>)
 
-  <p class="flash">Tip: click any <strong>.html</strong> file below to play that game — same idea as opening a file on GitHub.</p>
+score = <span class="tok-fn">100</span>
+<span class="tok-kw">if</span> score &gt; <span class="tok-fn">50</span>:
+    <span class="tok-kw">print</span>(<span class="tok-str">"You win!"</span>)</pre>
+      </div>
+    </div>
+  </section>
 
-  <div class="page">
-    <main>
-      <div class="toolbar">
-        <span class="branch">main ▾</span>
-        <span class="meta-links">
-          <span>1 Branch</span>
-          <span>0 Tags</span>
-        </span>
-        <div class="go-file">Go to file <kbd>t</kbd></div>
-        <button class="btn" type="button">Add file ▾</button>
-        <a class="btn btn-primary" href="https://github.com/Edu-za/Rodpy" target="_blank" rel="noopener">&lt;&gt; Code ▾</a>
+  <section id="games">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Games</h2>
+          <p>Two-player races and solo drills — open any card.</p>
+        </div>
       </div>
 
-      <div class="box">
-        <div class="commit-bar">
-          <div class="who">
-            <span class="avatar">E</span>
-            <strong>Edu-za</strong>
-            <a class="commit-msg" href="https://github.com/Edu-za/Rodpy/commits/main">Add Rodpy Arcade with 15 math and coding mini-games.</a>
-          </div>
-          <div class="commit-meta">
-            <span>6af4d4e</span>
-            <span>just now</span>
-            <span>⏱ History</span>
-          </div>
+      <h3 style="font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);margin:0 0 0.75rem">2-player races</h3>
+      <div class="grid" id="races"></div>
+
+      <h3 style="font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);margin:1.75rem 0 0.75rem">Solo practice</h3>
+      <div class="grid" id="solos"></div>
+    </div>
+  </section>
+
+  <section id="how" style="background:var(--canvas);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>How it works</h2>
+          <p>Same laptop. Same challenge. First correct submit scores.</p>
         </div>
-        <ul class="files" id="fileList"></ul>
       </div>
-
-      <section class="readme" id="readme">
-        <div class="readme-head">
-          <span>README.md</span>
-          <span style="color:var(--muted)">🖊</span>
+      <div class="split">
+        <div class="panel">
+          <h3>Race mode</h3>
+          <p>Enter two names, hit start, and type answers side by side.</p>
+          <ol>
+            <li>Read the tip and example</li>
+            <li>Both players type at once</li>
+            <li>First correct answer wins the round</li>
+            <li>First to 5 points wins the match</li>
+          </ol>
         </div>
-        <div class="readme-body">
-          <h1>Rodpy Arcade</h1>
-          <p>Kid-friendly <strong>math + Python</strong> mini-games — plain HTML you can open in a browser. Built to feel like browsing a GitHub repo: pick a file, play the game.</p>
-
-          <h2>Play</h2>
-          <p>Open any game file from the list above, or use the shortcuts here:</p>
-          <div class="play-grid" id="playGrid"></div>
-
-          <h2>2-player races</h2>
-          <ul>
-            <li><code>code-race.html</code> — PyPals Python duel</li>
-            <li><code>tables.html</code> — Times Table Turbo</li>
-            <li><code>fractions.html</code> — Fraction Frenzy</li>
-            <li><code>integers.html</code> — Integer Island</li>
-            <li><code>percent.html</code> — Percent Sprint</li>
-            <li><code>algebra.html</code> — Algebra Duel</li>
-          </ul>
-
-          <h2>Solo practice</h2>
-          <ul>
-            <li><code>bonds.html</code> · <code>shapes.html</code> · <code>angles.html</code> · <code>coordinates.html</code></li>
-            <li><code>patterns.html</code> · <code>market.html</code> · <code>travel.html</code> · <code>earth.html</code> · <code>lp.html</code></li>
-          </ul>
-
-          <h2>Source</h2>
-          <p>Real repo: <a href="https://github.com/Edu-za/Rodpy">github.com/Edu-za/Rodpy</a> · regenerate pack with <code>generate_arcade.py</code></p>
+        <div class="panel">
+          <h3>Solo mode</h3>
+          <p>Unlimited practice with instant feedback and score streaks.</p>
+          <ol>
+            <li>Pick a topic (fractions, money, graphs…)</li>
+            <li>Answer as many as you want</li>
+            <li>Build confidence before class or exams</li>
+          </ol>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
+  </section>
 
-    <aside class="side" id="about">
-      <section>
-        <h3>About</h3>
-        <p class="desc-edit">Math &amp; Python arcade for kids — race a friend or practice solo.</p>
-        <div class="topics">
-          <span class="topic">education</span>
-          <span class="topic">html-games</span>
-          <span class="topic">python</span>
-          <span class="topic">mathematics</span>
+  <section>
+    <div class="wrap">
+      <div class="cta-band">
+        <div>
+          <h2>Ready when you are</h2>
+          <p>No accounts. No downloads. Just open a game and play.</p>
         </div>
-        <ul style="margin-top:10px">
-          <li>📖 Readme</li>
-          <li>📊 Activity</li>
-          <li>⭐ 0 stars</li>
-          <li>👁 0 watching</li>
-          <li>🍴 0 forks</li>
-        </ul>
-      </section>
-      <section>
-        <h3>Releases</h3>
-        <p>No releases published</p>
-      </section>
-      <section>
-        <h3>Packages</h3>
-        <p>No packages published</p>
-      </section>
-      <section>
-        <h3>Contributors</h3>
-        <ul>
-          <li><span class="avatar">E</span> Edu-za Skutopia Academy</li>
-        </ul>
-      </section>
-      <section>
-        <h3>Languages</h3>
-        <div class="lang-bar" aria-hidden="true">
-          <i class="lang-html"></i>
-          <i class="lang-js"></i>
-          <i class="lang-py"></i>
-        </div>
-        <ul>
-          <li><span style="color:#e34c26">●</span> HTML 92.0%</li>
-          <li><span style="color:#f1e05a">●</span> JavaScript 6.0%</li>
-          <li><span style="color:#3572a5">●</span> Python 2.0%</li>
-        </ul>
-      </section>
-    </aside>
-  </div>
+        <a class="btn btn-primary btn-lg" href="code-race.html">Launch PyPals Race</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap foot">
+      <span>© Edu-za · Rodpy Arcade</span>
+      <span>
+        <a href="https://github.com/Edu-za/Rodpy">GitHub</a>
+        ·
+        <a href="index.html">Home</a>
+      </span>
+    </div>
+  </footer>
 
   <script>
-    const FILES = [
-      { name: "README.md", href: "#readme", msg: "Add Rodpy Arcade with 15 math and coding mini-games.", when: "just now", icon: "doc" },
-      { name: "algebra.html", href: "algebra.html", msg: "Algebra Duel — 2P solve for x", when: "just now", icon: "code" },
-      { name: "angles.html", href: "angles.html", msg: "Angle Archer — acute/right/obtuse", when: "just now", icon: "code" },
-      { name: "bonds.html", href: "bonds.html", msg: "Number Bond Builder", when: "just now", icon: "code" },
-      { name: "code-race.html", href: "code-race.html", msg: "PyPals Code Race — Python 2P", when: "just now", icon: "code" },
-      { name: "coordinates.html", href: "coordinates.html", msg: "Coordinate Quest", when: "just now", icon: "code" },
-      { name: "earth.html", href: "earth.html", msg: "Earth Geometry lite", when: "just now", icon: "code" },
-      { name: "fractions.html", href: "fractions.html", msg: "Fraction Frenzy — 2P", when: "just now", icon: "code" },
-      { name: "generate_arcade.py", href: "generate_arcade.py", msg: "Arcade generator script", when: "just now", icon: "code" },
-      { name: "index.html", href: "index.html", msg: "GitHub-style arcade hub", when: "just now", icon: "code" },
-      { name: "integers.html", href: "integers.html", msg: "Integer Island — 2P", when: "just now", icon: "code" },
-      { name: "lp.html", href: "lp.html", msg: "LP Region Rush", when: "just now", icon: "code" },
-      { name: "market.html", href: "market.html", msg: "Market Math (ZMW)", when: "just now", icon: "code" },
-      { name: "patterns.html", href: "patterns.html", msg: "Pattern Prophet", when: "just now", icon: "code" },
-      { name: "percent.html", href: "percent.html", msg: "Percent Sprint — 2P", when: "just now", icon: "code" },
-      { name: "shapes.html", href: "shapes.html", msg: "Shape Sorter", when: "just now", icon: "code" },
-      { name: "tables.html", href: "tables.html", msg: "Times Table Turbo — 2P", when: "just now", icon: "code" },
-      { name: "travel.html", href: "travel.html", msg: "Travel Graph Dash", when: "just now", icon: "code" },
+    const RACES = [
+      { href: "code-race.html", icon: "🐍", title: "PyPals Code Race", desc: "Python print, variables, and if — hot-seat duel.", tag: "2P" },
+      { href: "tables.html", icon: "⚡", title: "Times Table Turbo", desc: "Multiplication race. First correct moves forward.", tag: "2P" },
+      { href: "fractions.html", icon: "🍕", title: "Fraction Frenzy", desc: "Simplify and compare fractions under pressure.", tag: "2P" },
+      { href: "integers.html", icon: "🏝️", title: "Integer Island", desc: "Add and subtract with negatives.", tag: "2P" },
+      { href: "percent.html", icon: "📈", title: "Percent Sprint", desc: "Percent of a number — quick mental math.", tag: "2P" },
+      { href: "algebra.html", icon: "𝑥", title: "Algebra Duel", desc: "Solve for x in one-line equations.", tag: "2P" },
+    ];
+    const SOLOS = [
+      { href: "bonds.html", icon: "🔗", title: "Number Bond Builder", desc: "Find the missing partner to make 10 or 100.", tag: "Solo" },
+      { href: "shapes.html", icon: "🔺", title: "Shape Sorter", desc: "Sort triangles, circles, polygons into bins.", tag: "Solo" },
+      { href: "angles.html", icon: "🏹", title: "Angle Archer", desc: "Name acute, right, obtuse, and straight.", tag: "Solo" },
+      { href: "coordinates.html", icon: "🗺️", title: "Coordinate Quest", desc: "Read points on a grid as x, y.", tag: "Solo" },
+      { href: "patterns.html", icon: "🔮", title: "Pattern Prophet", desc: "What comes next in the sequence?", tag: "Solo" },
+      { href: "market.html", icon: "🛒", title: "Market Math", desc: "ZMW prices and change at the stall.", tag: "Solo" },
+      { href: "travel.html", icon: "🚌", title: "Travel Graph Dash", desc: "Speed, distance, and time stories.", tag: "Solo" },
+      { href: "earth.html", icon: "🌍", title: "Earth Geometry", desc: "Latitude and longitude basics.", tag: "Solo" },
+      { href: "lp.html", icon: "📐", title: "LP Region Rush", desc: "Feasible region corner-point lite.", tag: "Solo" },
     ];
 
-    const PLAY = FILES.filter((f) => f.name.endsWith(".html") && f.name !== "index.html");
-
-    const fileIcon = `<svg class="icon" viewBox="0 0 16 16" fill="#656d76" aria-hidden="true"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/></svg>`;
-
-    const list = document.getElementById("fileList");
-    FILES.forEach((f) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${fileIcon}<a class="name" href="${f.href}">${f.name}</a><span class="msg">${f.msg}</span><span class="when">${f.when}</span>`;
-      list.appendChild(li);
-    });
-
-    const grid = document.getElementById("playGrid");
-    PLAY.forEach((f) => {
-      const a = document.createElement("a");
-      a.href = f.href;
-      a.innerHTML = `<strong>${f.name}</strong><span>${f.msg}</span>`;
-      grid.appendChild(a);
-    });
-
-    // Fake "Go to file" — focus filter
-    document.querySelector(".go-file").addEventListener("click", () => {
-      const q = prompt("Go to file (type part of the name):");
-      if (!q) return;
-      const hit = FILES.find((f) => f.name.toLowerCase().includes(q.toLowerCase()));
-      if (hit) location.href = hit.href;
-      else alert("File not found in this arcade.");
-    });
+    function render(list, mountId) {
+      const root = document.getElementById(mountId);
+      root.innerHTML = list.map((g) => `
+        <a class="game" href="${g.href}">
+          <div class="top">
+            <span class="icon">${g.icon}</span>
+            <span class="badge ${g.tag === "Solo" ? "solo" : ""}">${g.tag}</span>
+          </div>
+          <h3>${g.title}</h3>
+          <p>${g.desc}</p>
+          <span class="open">Open game →</span>
+        </a>
+      `).join("");
+    }
+    render(RACES, "races");
+    render(SOLOS, "solos");
   </script>
 </body>
 </html>
