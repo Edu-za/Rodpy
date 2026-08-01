@@ -3,98 +3,438 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rodpy Arcade</title>
+  <title>Edu-za/Rodpy · Arcade</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-:root{
-  --ink:#12231c;--leaf:#1f7a4c;--leaf-deep:#0f4d32;--sun:#f4b942;--coral:#e76f51;
-  --p1:#1f7a4c;--p2:#c45c26;--cream:#f3faf5;--panel:#fff;--code:#143528;
-  --shadow:0 14px 32px rgba(15,77,50,.14);
-}
-*{box-sizing:border-box}body{margin:0;font-family:"Space Grotesk",system-ui,sans-serif;color:var(--ink);
-background:radial-gradient(900px 480px at 0% 0%,#b8f0c8 0%,transparent 55%),
-radial-gradient(800px 420px at 100% 0%,#ffe0c2 0%,transparent 50%),
-linear-gradient(180deg,#eaf8ef,#f3faf5);min-height:100vh;line-height:1.45}
-.wrap{width:min(1060px,calc(100% - 1.4rem));margin:0 auto;padding:1rem 0 2rem}
-.brand{font-family:"Baloo 2",cursive;font-weight:800;font-size:1.35rem;text-decoration:none;color:var(--ink)}
-.brand span{color:var(--sun)}.hidden{display:none!important}
-.btn{border:0;font:inherit;font-weight:700;cursor:pointer;border-radius:999px;padding:.75rem 1.2rem;transition:transform .15s}
-.btn:hover{transform:translateY(-2px)}.btn-sun{background:var(--sun);color:var(--ink);box-shadow:0 8px 18px rgba(244,185,66,.35)}
-.btn-p1{background:var(--p1);color:#fff}.btn-p2{background:var(--p2);color:#fff}.btn-ghost{background:#fff;border:2px solid rgba(18,35,28,.1)}
-input[type=text],input[type=number]{width:100%;font:inherit;padding:.65rem .8rem;border-radius:12px;border:2px solid #cfe3d7;background:#f7fcf9}
-input:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 3px rgba(31,122,76,.15)}
-.card{background:var(--panel);border-radius:20px;padding:1.1rem 1.15rem;box-shadow:var(--shadow);margin-bottom:1rem}
-h1,h2{font-family:"Baloo 2",cursive;line-height:1.05;margin:0 0 .4rem}
-.muted{color:rgba(18,35,28,.7)}.mono{font-family:"IBM Plex Mono",monospace}
-.hud{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:space-between;margin:.4rem 0 1rem}
-.pill{display:flex;gap:.45rem;align-items:center;background:#fff;padding:.4rem .8rem;border-radius:999px;box-shadow:var(--shadow);font-weight:700}
-.pill .dot{width:10px;height:10px;border-radius:50%}.pill.p1 .dot{background:var(--p1)}.pill.p2 .dot{background:var(--p2)}
-.track{background:var(--code);border-radius:18px;padding:.9rem;margin-bottom:1rem;color:#c8ebd8}
-.lane{position:relative;height:48px;margin:.45rem 0;border-radius:12px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 28px,rgba(255,255,255,.02) 28px 56px);border:1px solid rgba(255,255,255,.08)}
-.finish{position:absolute;right:10px;top:6px;bottom:6px;width:10px;background:repeating-linear-gradient(#fff 0 4px,#12231c 4px 8px);opacity:.85}
-.racer{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:1.7rem;transition:left .5s cubic-bezier(.22,1,.36,1)}
-.arena{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}@media(max-width:700px){.arena{grid-template-columns:1fr}}
-.pad{border:3px solid;border-radius:16px;padding:.85rem;background:#f7fcf9}.pad.p1{border-color:var(--p1)}.pad.p2{border-color:var(--p2)}
-.pad.locked{opacity:.55;pointer-events:none}.pad.winner{background:#fff8e6}
-.fb{min-height:1.2rem;font-weight:700;font-size:.9rem;margin-top:.4rem}.fb.ok{color:var(--leaf-deep)}.fb.no{color:#b42318}
-.banner{text-align:center;font-family:"Baloo 2",cursive;font-size:1.25rem;min-height:1.5rem;margin:.7rem 0 0}
-.prompt{font-size:clamp(1.4rem,4vw,2rem);font-family:"Baloo 2",cursive;text-align:center;margin:.6rem 0}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}@media(max-width:700px){.grid2{grid-template-columns:1fr}}
-.choice{border:2px solid #cfe3d7;background:#fff;border-radius:14px;padding:.85rem;cursor:pointer;font-weight:700;text-align:center}
-.choice:hover{border-color:var(--leaf);background:#f0faf4}.choice.good{border-color:var(--leaf);background:#d8f3e4}.choice.bad{border-color:#b42318;background:#fdecea}
-.board{display:grid;gap:.55rem}.stars{display:flex;gap:.35rem;margin:.5rem 0}.star{width:26px;height:26px;border-radius:50%;background:#d7e8de}.star.on{background:var(--sun)}
-footer{text-align:center;color:rgba(18,35,28,.5);font-size:.85rem;padding:0 0 1.5rem}
-.confetti{pointer-events:none;position:fixed;inset:0;overflow:hidden;z-index:40}.confetti i{position:absolute;top:-12px;width:10px;height:14px;border-radius:2px;animation:fall linear forwards}
-@keyframes fall{to{transform:translateY(110vh) rotate(520deg)}}
-</style>
+    :root {
+      --bg: #ffffff;
+      --canvas: #f6f8fa;
+      --border: #d0d7de;
+      --border-muted: #d8dee4;
+      --text: #1f2328;
+      --muted: #656d76;
+      --link: #0969da;
+      --accent: #1f883d;
+      --accent-hover: #1a7f37;
+      --header: #f6f8fa;
+      --chip: #afb8c133;
+      --success-bg: #dafbe1;
+      --success: #1a7f37;
+      --radius: 6px;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--text);
+      background: var(--bg);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top nav — GitHub-ish */
+    .topnav {
+      background: var(--header);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--text);
+      color: #fff;
+      display: grid; place-items: center;
+      font-weight: 700; font-size: 12px;
+      flex: 0 0 auto;
+    }
+    .repo-path {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 14px; flex-wrap: wrap;
+    }
+    .repo-path a { font-weight: 600; }
+    .repo-path .sep { color: var(--muted); }
+    .repo-path strong { font-weight: 600; }
+    .pill-public {
+      font-size: 12px; font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: 2em; padding: 0 7px; color: var(--muted);
+    }
+    .top-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      appearance: none; border: 1px solid var(--border);
+      background: var(--canvas); color: var(--text);
+      border-radius: var(--radius); padding: 5px 12px;
+      font: inherit; font-weight: 500; font-size: 12px;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn:hover { background: #eef1f4; text-decoration: none; }
+    .btn-primary {
+      background: var(--accent); border-color: rgba(27,31,36,.15);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    /* Under-nav tabs */
+    .tabs {
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+      display: flex; gap: 4px; overflow-x: auto;
+    }
+    .tab {
+      padding: 10px 12px; color: var(--text); font-weight: 500;
+      border-bottom: 2px solid transparent; white-space: nowrap;
+    }
+    .tab:hover { color: var(--text); text-decoration: none; border-bottom-color: var(--border); }
+    .tab.active { border-bottom-color: #fd8c73; font-weight: 600; }
+    .tab .count {
+      background: var(--chip); border-radius: 2em; padding: 0 6px;
+      font-size: 12px; margin-left: 4px; color: var(--muted);
+    }
+
+    .page {
+      width: min(1280px, 100%);
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 296px;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; }
+    }
+
+    /* Toolbar above files */
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      align-items: center; margin-bottom: 12px;
+    }
+    .branch {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1px solid var(--border); background: var(--canvas);
+      border-radius: var(--radius); padding: 5px 12px; font-weight: 600; font-size: 12px;
+    }
+    .branch::before { content: ""; width: 14px; height: 14px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23656d76' d='M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.5 2.5 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Z'/%3E%3C/svg%3E") center/contain no-repeat; }
+    .meta-links { color: var(--muted); font-size: 12px; display: flex; gap: 12px; }
+    .go-file {
+      flex: 1; min-width: 160px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 5px 12px; background: #fff; color: var(--muted); font-size: 14px;
+    }
+    .go-file kbd {
+      float: right; border: 1px solid var(--border); border-radius: 4px;
+      padding: 0 4px; font-size: 11px; font-family: var(--sans);
+    }
+
+    /* Commit bar + file table */
+    .box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fff;
+    }
+    .commit-bar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      align-items: center; justify-content: space-between;
+      padding: 10px 16px; background: var(--canvas);
+      border-bottom: 1px solid var(--border); font-size: 12px;
+    }
+    .commit-bar .who { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .avatar {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #1f883d; color: #fff; font-size: 10px; font-weight: 700;
+      display: grid; place-items: center;
+    }
+    .commit-msg { font-weight: 600; color: var(--text); }
+    .commit-msg:hover { color: var(--link); text-decoration: none; }
+    .commit-meta { color: var(--muted); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    .files { list-style: none; margin: 0; padding: 0; }
+    .files li {
+      display: grid;
+      grid-template-columns: 20px minmax(120px, 1fr) minmax(0, 2fr) auto;
+      gap: 12px; align-items: center;
+      padding: 8px 16px; border-top: 1px solid var(--border-muted);
+      font-size: 14px;
+    }
+    .files li:first-child { border-top: 0; }
+    .files li:hover { background: #f6f8fa; }
+    .files .icon { color: var(--muted); width: 16px; height: 16px; }
+    .files .name { font-weight: 400; color: var(--link); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .files .name:hover { text-decoration: underline; }
+    .files .msg { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+    .files .when { color: var(--muted); font-size: 12px; white-space: nowrap; justify-self: end; }
+
+    /* README */
+    .readme {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .readme-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 16px; background: var(--canvas); border-bottom: 1px solid var(--border);
+      font-weight: 600; font-size: 12px;
+    }
+    .readme-body { padding: 24px 32px; }
+    @media (max-width: 600px) { .readme-body { padding: 16px; } }
+    .readme-body h1 {
+      margin: 0 0 12px; font-size: 32px; font-weight: 600;
+      border-bottom: 1px solid var(--border); padding-bottom: 8px;
+    }
+    .readme-body h2 {
+      margin: 24px 0 8px; font-size: 24px; font-weight: 600;
+      border-bottom: 1px solid var(--border); padding-bottom: 6px;
+    }
+    .readme-body p { margin: 0 0 12px; }
+    .readme-body ul, .readme-body ol { margin: 0 0 12px; padding-left: 2em; }
+    .readme-body code {
+      font-family: var(--mono); font-size: 85%;
+      background: rgba(175,184,193,.2); padding: .2em .4em; border-radius: 6px;
+    }
+    .readme-body .play-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px; margin: 12px 0 16px;
+    }
+    .play-grid a {
+      display: block; border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px 12px; color: var(--text); background: #fff;
+    }
+    .play-grid a:hover { border-color: var(--link); text-decoration: none; background: #f6f8fa; }
+    .play-grid strong { display: block; color: var(--link); }
+    .play-grid span { color: var(--muted); font-size: 12px; }
+
+    /* Sidebar */
+    .side h3 {
+      margin: 0 0 8px; font-size: 14px; font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .side section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .side section:last-child { border-bottom: 0; }
+    .side p, .side li { color: var(--muted); font-size: 12px; }
+    .side ul { list-style: none; margin: 0; padding: 0; }
+    .side li { display: flex; align-items: center; gap: 6px; margin: 6px 0; color: var(--text); font-size: 12px; }
+    .lang-bar { height: 8px; border-radius: 6px; overflow: hidden; background: #eee; display: flex; margin: 8px 0; }
+    .lang-bar i { display: block; height: 100%; }
+    .lang-html { background: #e34c26; flex: 92; }
+    .lang-js { background: #f1e05a; flex: 6; }
+    .lang-py { background: #3572a5; flex: 2; }
+    .topics { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .topic {
+      background: #ddf4ff; color: #0969da; border-radius: 2em;
+      padding: 0 10px; font-size: 12px; font-weight: 500;
+    }
+    .desc-edit { color: var(--muted); font-size: 12px; }
+
+    .flash {
+      margin: 12px 16px 0; padding: 10px 14px;
+      background: var(--success-bg); color: var(--success);
+      border: 1px solid #4ac26b66; border-radius: var(--radius);
+      font-size: 13px;
+    }
+  </style>
 </head>
 <body>
+  <header class="topnav">
+    <div class="logo" title="Rodpy">R</div>
+    <div class="repo-path">
+      <a href="index.html">Edu-za</a>
+      <span class="sep">/</span>
+      <strong><a href="index.html">Rodpy</a></strong>
+      <span class="pill-public">Public</span>
+    </div>
+    <div class="top-actions">
+      <button class="btn" type="button" title="Watch">👁 Watch</button>
+      <button class="btn" type="button" title="Fork">🍴 Fork</button>
+      <button class="btn" type="button" title="Star">⭐ Star</button>
+      <a class="btn btn-primary" href="https://github.com/Edu-za/Rodpy" target="_blank" rel="noopener">Code ▾</a>
+    </div>
+  </header>
 
-<style>
-.hero{border-radius:28px;padding:1.8rem;margin:1rem 0 1.4rem;color:#fff;background:
-linear-gradient(135deg,rgba(15,77,50,.85),rgba(196,92,38,.75)),
-url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 500'%3E%3Crect fill='%231f7a4c' width='1200' height='500'/%3E%3Ccircle cx='200' cy='100' r='70' fill='%23f4b942' opacity='.35'/%3E%3C/svg%3E") center/cover;box-shadow:var(--shadow)}
-.hero h1{font-size:clamp(2.2rem,6vw,3.5rem);max-width:12ch}
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.85rem}
-a.game{text-decoration:none;color:inherit;transition:transform .15s}.game:hover{transform:translateY(-3px)}
-.em{font-size:2rem;margin-bottom:.35rem}
-</style>
-<div class="wrap">
-  <div class="brand">Rodpy <span>Arcade</span></div>
-  <div class="hero">
-    <h1>Learn by racing, sorting, and solving.</h1>
-    <p style="margin:0;max-width:36ch;opacity:.95">Math + Python mini-games for two players or solo practice. Open any game — no install.</p>
+  <nav class="tabs" aria-label="Repository">
+    <a class="tab active" href="index.html"><> Code</a>
+    <a class="tab" href="#readme">Issues <span class="count">0</span></a>
+    <a class="tab" href="#readme">Pull requests <span class="count">0</span></a>
+    <a class="tab" href="https://github.com/Edu-za/Rodpy/actions" target="_blank" rel="noopener">Actions</a>
+    <a class="tab" href="#about">About</a>
+  </nav>
+
+  <p class="flash">Tip: click any <strong>.html</strong> file below to play that game — same idea as opening a file on GitHub.</p>
+
+  <div class="page">
+    <main>
+      <div class="toolbar">
+        <span class="branch">main ▾</span>
+        <span class="meta-links">
+          <span>1 Branch</span>
+          <span>0 Tags</span>
+        </span>
+        <div class="go-file">Go to file <kbd>t</kbd></div>
+        <button class="btn" type="button">Add file ▾</button>
+        <a class="btn btn-primary" href="https://github.com/Edu-za/Rodpy" target="_blank" rel="noopener">&lt;&gt; Code ▾</a>
+      </div>
+
+      <div class="box">
+        <div class="commit-bar">
+          <div class="who">
+            <span class="avatar">E</span>
+            <strong>Edu-za</strong>
+            <a class="commit-msg" href="https://github.com/Edu-za/Rodpy/commits/main">Add Rodpy Arcade with 15 math and coding mini-games.</a>
+          </div>
+          <div class="commit-meta">
+            <span>6af4d4e</span>
+            <span>just now</span>
+            <span>⏱ History</span>
+          </div>
+        </div>
+        <ul class="files" id="fileList"></ul>
+      </div>
+
+      <section class="readme" id="readme">
+        <div class="readme-head">
+          <span>README.md</span>
+          <span style="color:var(--muted)">🖊</span>
+        </div>
+        <div class="readme-body">
+          <h1>Rodpy Arcade</h1>
+          <p>Kid-friendly <strong>math + Python</strong> mini-games — plain HTML you can open in a browser. Built to feel like browsing a GitHub repo: pick a file, play the game.</p>
+
+          <h2>Play</h2>
+          <p>Open any game file from the list above, or use the shortcuts here:</p>
+          <div class="play-grid" id="playGrid"></div>
+
+          <h2>2-player races</h2>
+          <ul>
+            <li><code>code-race.html</code> — PyPals Python duel</li>
+            <li><code>tables.html</code> — Times Table Turbo</li>
+            <li><code>fractions.html</code> — Fraction Frenzy</li>
+            <li><code>integers.html</code> — Integer Island</li>
+            <li><code>percent.html</code> — Percent Sprint</li>
+            <li><code>algebra.html</code> — Algebra Duel</li>
+          </ul>
+
+          <h2>Solo practice</h2>
+          <ul>
+            <li><code>bonds.html</code> · <code>shapes.html</code> · <code>angles.html</code> · <code>coordinates.html</code></li>
+            <li><code>patterns.html</code> · <code>market.html</code> · <code>travel.html</code> · <code>earth.html</code> · <code>lp.html</code></li>
+          </ul>
+
+          <h2>Source</h2>
+          <p>Real repo: <a href="https://github.com/Edu-za/Rodpy">github.com/Edu-za/Rodpy</a> · regenerate pack with <code>generate_arcade.py</code></p>
+        </div>
+      </section>
+    </main>
+
+    <aside class="side" id="about">
+      <section>
+        <h3>About</h3>
+        <p class="desc-edit">Math &amp; Python arcade for kids — race a friend or practice solo.</p>
+        <div class="topics">
+          <span class="topic">education</span>
+          <span class="topic">html-games</span>
+          <span class="topic">python</span>
+          <span class="topic">mathematics</span>
+        </div>
+        <ul style="margin-top:10px">
+          <li>📖 Readme</li>
+          <li>📊 Activity</li>
+          <li>⭐ 0 stars</li>
+          <li>👁 0 watching</li>
+          <li>🍴 0 forks</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Releases</h3>
+        <p>No releases published</p>
+      </section>
+      <section>
+        <h3>Packages</h3>
+        <p>No packages published</p>
+      </section>
+      <section>
+        <h3>Contributors</h3>
+        <ul>
+          <li><span class="avatar">E</span> Edu-za Skutopia Academy</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Languages</h3>
+        <div class="lang-bar" aria-hidden="true">
+          <i class="lang-html"></i>
+          <i class="lang-js"></i>
+          <i class="lang-py"></i>
+        </div>
+        <ul>
+          <li><span style="color:#e34c26">●</span> HTML 92.0%</li>
+          <li><span style="color:#f1e05a">●</span> JavaScript 6.0%</li>
+          <li><span style="color:#3572a5">●</span> Python 2.0%</li>
+        </ul>
+      </section>
+    </aside>
   </div>
-  <div class="games-grid"><a class="card game" href="code-race.html"><div class="em">🐍</div><h2>PyPals Code Race</h2><p class="muted">2P · Python basics</p></a>
-<a class="card game" href="tables.html"><div class="em">⚡</div><h2>Times Table Turbo</h2><p class="muted">2P · multiplication</p></a>
-<a class="card game" href="fractions.html"><div class="em">🍕</div><h2>Fraction Frenzy</h2><p class="muted">2P · simplify & compare</p></a>
-<a class="card game" href="integers.html"><div class="em">🏝️</div><h2>Integer Island</h2><p class="muted">2P · negatives</p></a>
-<a class="card game" href="percent.html"><div class="em">📈</div><h2>Percent Sprint</h2><p class="muted">2P · percentages</p></a>
-<a class="card game" href="algebra.html"><div class="em">𝑥</div><h2>Algebra Duel</h2><p class="muted">2P · solve for x</p></a>
-<a class="card game" href="bonds.html"><div class="em">🔗</div><h2>Number Bond Builder</h2><p class="muted">Solo · make 10/100</p></a>
-<a class="card game" href="shapes.html"><div class="em">🔺</div><h2>Shape Sorter</h2><p class="muted">Solo · geometry</p></a>
-<a class="card game" href="angles.html"><div class="em">🏹</div><h2>Angle Archer</h2><p class="muted">Solo · estimate angles</p></a>
-<a class="card game" href="coordinates.html"><div class="em">🗺️</div><h2>Coordinate Quest</h2><p class="muted">Solo · plot points</p></a>
-<a class="card game" href="patterns.html"><div class="em">🔮</div><h2>Pattern Prophet</h2><p class="muted">Solo · sequences</p></a>
-<a class="card game" href="market.html"><div class="em">🛒</div><h2>Market Math</h2><p class="muted">Solo · ZMW money</p></a>
-<a class="card game" href="travel.html"><div class="em">🚌</div><h2>Travel Graph Dash</h2><p class="muted">Solo · distance-time</p></a>
-<a class="card game" href="earth.html"><div class="em">🌍</div><h2>Earth Geometry</h2><p class="muted">Solo · lat/long lite</p></a>
-<a class="card game" href="lp.html"><div class="em">📐</div><h2>LP Region Rush</h2><p class="muted">Solo · feasible region</p></a></div>
-</div>
 
-<footer><a class="brand" href="index.html">Rodpy Arcade</a> · open in your browser</footer>
-<script>
-function confettiBurst(){
-  let box=document.getElementById('confetti');
-  if(!box){box=document.createElement('div');box.id='confetti';box.className='confetti';document.body.appendChild(box);}
-  box.classList.remove('hidden');box.innerHTML='';
-  const colors=['#f4b942','#1f7a4c','#e76f51','#2a9d8f','#fff'];
-  for(let i=0;i<40;i++){const b=document.createElement('i');b.style.left=Math.random()*100+'%';b.style.background=colors[i%colors.length];b.style.animationDuration=(1.1+Math.random()*1.3)+'s';box.appendChild(b);}
-  setTimeout(()=>box.classList.add('hidden'),2600);
-}
+  <script>
+    const FILES = [
+      { name: "README.md", href: "#readme", msg: "Add Rodpy Arcade with 15 math and coding mini-games.", when: "just now", icon: "doc" },
+      { name: "algebra.html", href: "algebra.html", msg: "Algebra Duel — 2P solve for x", when: "just now", icon: "code" },
+      { name: "angles.html", href: "angles.html", msg: "Angle Archer — acute/right/obtuse", when: "just now", icon: "code" },
+      { name: "bonds.html", href: "bonds.html", msg: "Number Bond Builder", when: "just now", icon: "code" },
+      { name: "code-race.html", href: "code-race.html", msg: "PyPals Code Race — Python 2P", when: "just now", icon: "code" },
+      { name: "coordinates.html", href: "coordinates.html", msg: "Coordinate Quest", when: "just now", icon: "code" },
+      { name: "earth.html", href: "earth.html", msg: "Earth Geometry lite", when: "just now", icon: "code" },
+      { name: "fractions.html", href: "fractions.html", msg: "Fraction Frenzy — 2P", when: "just now", icon: "code" },
+      { name: "generate_arcade.py", href: "generate_arcade.py", msg: "Arcade generator script", when: "just now", icon: "code" },
+      { name: "index.html", href: "index.html", msg: "GitHub-style arcade hub", when: "just now", icon: "code" },
+      { name: "integers.html", href: "integers.html", msg: "Integer Island — 2P", when: "just now", icon: "code" },
+      { name: "lp.html", href: "lp.html", msg: "LP Region Rush", when: "just now", icon: "code" },
+      { name: "market.html", href: "market.html", msg: "Market Math (ZMW)", when: "just now", icon: "code" },
+      { name: "patterns.html", href: "patterns.html", msg: "Pattern Prophet", when: "just now", icon: "code" },
+      { name: "percent.html", href: "percent.html", msg: "Percent Sprint — 2P", when: "just now", icon: "code" },
+      { name: "shapes.html", href: "shapes.html", msg: "Shape Sorter", when: "just now", icon: "code" },
+      { name: "tables.html", href: "tables.html", msg: "Times Table Turbo — 2P", when: "just now", icon: "code" },
+      { name: "travel.html", href: "travel.html", msg: "Travel Graph Dash", when: "just now", icon: "code" },
+    ];
 
-</script>
+    const PLAY = FILES.filter((f) => f.name.endsWith(".html") && f.name !== "index.html");
+
+    const fileIcon = `<svg class="icon" viewBox="0 0 16 16" fill="#656d76" aria-hidden="true"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/></svg>`;
+
+    const list = document.getElementById("fileList");
+    FILES.forEach((f) => {
+      const li = document.createElement("li");
+      li.innerHTML = `${fileIcon}<a class="name" href="${f.href}">${f.name}</a><span class="msg">${f.msg}</span><span class="when">${f.when}</span>`;
+      list.appendChild(li);
+    });
+
+    const grid = document.getElementById("playGrid");
+    PLAY.forEach((f) => {
+      const a = document.createElement("a");
+      a.href = f.href;
+      a.innerHTML = `<strong>${f.name}</strong><span>${f.msg}</span>`;
+      grid.appendChild(a);
+    });
+
+    // Fake "Go to file" — focus filter
+    document.querySelector(".go-file").addEventListener("click", () => {
+      const q = prompt("Go to file (type part of the name):");
+      if (!q) return;
+      const hit = FILES.find((f) => f.name.toLowerCase().includes(q.toLowerCase()));
+      if (hit) location.href = hit.href;
+      else alert("File not found in this arcade.");
+    });
+  </script>
 </body>
 </html>

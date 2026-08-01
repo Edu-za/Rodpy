@@ -1,30 +1,27 @@
 # Rodpy Arcade
 
-Kid-friendly **math + Python** mini-games (static HTML).
+Kid-friendly **math + Python** mini-games — plain HTML you can open in a browser.
 
-## Open
+The hub (`index.html`) is styled like a **GitHub repository page**: file list, README, About sidebar. Click any `.html` file to play.
 
-Open [`index.html`](index.html) in a browser for the full arcade menu.
+## Play
 
-## Games
+Open [`index.html`](index.html) in your browser.
 
 ### 2-player races
-- [PyPals Code Race](code-race.html) — Python `print`, variables, `if`
-- [Times Table Turbo](tables.html)
-- [Fraction Frenzy](fractions.html)
-- [Integer Island](integers.html)
-- [Percent Sprint](percent.html)
-- [Algebra Duel](algebra.html)
+- [code-race.html](code-race.html) — PyPals Python duel
+- [tables.html](tables.html) — Times Table Turbo
+- [fractions.html](fractions.html) — Fraction Frenzy
+- [integers.html](integers.html) — Integer Island
+- [percent.html](percent.html) — Percent Sprint
+- [algebra.html](algebra.html) — Algebra Duel
 
 ### Solo practice
-- [Number Bond Builder](bonds.html)
-- [Shape Sorter](shapes.html)
-- [Angle Archer](angles.html)
-- [Coordinate Quest](coordinates.html)
-- [Pattern Prophet](patterns.html)
-- [Market Math](market.html) — ZMW change
-- [Travel Graph Dash](travel.html)
-- [Earth Geometry](earth.html)
-- [LP Region Rush](lp.html)
+- [bonds.html](bonds.html) · [shapes.html](shapes.html) · [angles.html](angles.html) · [coordinates.html](coordinates.html)
+- [patterns.html](patterns.html) · [market.html](market.html) · [travel.html](travel.html) · [earth.html](earth.html) · [lp.html](lp.html)
 
-No install. No build step.
+## Source
+
+Real GitHub repo: https://github.com/Edu-za/Rodpy  
+
+Regenerate game pack: `python generate_arcade.py` (then keep this GitHub-style `index.html`).

@@ -194,48 +194,9 @@ $('a2').onkeydown=e=>{{if(e.key==='Enter')submit(2);}};
 
 
 def write_hub() -> None:
-    games = [
-        ("code-race.html", "🐍", "PyPals Code Race", "2P · Python basics"),
-        ("tables.html", "⚡", "Times Table Turbo", "2P · multiplication"),
-        ("fractions.html", "🍕", "Fraction Frenzy", "2P · simplify & compare"),
-        ("integers.html", "🏝️", "Integer Island", "2P · negatives"),
-        ("percent.html", "📈", "Percent Sprint", "2P · percentages"),
-        ("algebra.html", "𝑥", "Algebra Duel", "2P · solve for x"),
-        ("bonds.html", "🔗", "Number Bond Builder", "Solo · make 10/100"),
-        ("shapes.html", "🔺", "Shape Sorter", "Solo · geometry"),
-        ("angles.html", "🏹", "Angle Archer", "Solo · estimate angles"),
-        ("coordinates.html", "🗺️", "Coordinate Quest", "Solo · plot points"),
-        ("patterns.html", "🔮", "Pattern Prophet", "Solo · sequences"),
-        ("market.html", "🛒", "Market Math", "Solo · ZMW money"),
-        ("travel.html", "🚌", "Travel Graph Dash", "Solo · distance-time"),
-        ("earth.html", "🌍", "Earth Geometry", "Solo · lat/long lite"),
-        ("lp.html", "📐", "LP Region Rush", "Solo · feasible region"),
-    ]
-    cards = "\n".join(
-        f'<a class="card game" href="{href}"><div class="em">{em}</div><h2>{name}</h2><p class="muted">{desc}</p></a>'
-        for href, em, name, desc in games
-    )
-    body = f"""
-<style>
-.hero{{border-radius:28px;padding:1.8rem;margin:1rem 0 1.4rem;color:#fff;background:
-linear-gradient(135deg,rgba(15,77,50,.85),rgba(196,92,38,.75)),
-url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 500'%3E%3Crect fill='%231f7a4c' width='1200' height='500'/%3E%3Ccircle cx='200' cy='100' r='70' fill='%23f4b942' opacity='.35'/%3E%3C/svg%3E") center/cover;box-shadow:var(--shadow)}}
-.hero h1{{font-size:clamp(2.2rem,6vw,3.5rem);max-width:12ch}}
-.games-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.85rem}}
-a.game{{text-decoration:none;color:inherit;transition:transform .15s}}.game:hover{{transform:translateY(-3px)}}
-.em{{font-size:2rem;margin-bottom:.35rem}}
-</style>
-<div class="wrap">
-  <div class="brand">Rodpy <span>Arcade</span></div>
-  <div class="hero">
-    <h1>Learn by racing, sorting, and solving.</h1>
-    <p style="margin:0;max-width:36ch;opacity:.95">Math + Python mini-games for two players or solo practice. Open any game — no install.</p>
-  </div>
-  <div class="games-grid">{cards}</div>
-</div>
-"""
-    (ROOT / "index.html").write_text(page("Rodpy Arcade", body), encoding="utf-8")
-    print("wrote index.html")
+    """Hub is the GitHub-style index.html (hand-maintained). Do not overwrite it."""
+    print("skip index.html (GitHub-style hub is hand-maintained)")
+    return
 
 
 def write_solo_pages() -> None:
