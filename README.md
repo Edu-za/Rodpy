@@ -1,17 +1,21 @@
-# PyPals
+# PyPals Race
 
-A tiny kid-friendly webpage that teaches Python basics (`print`, variables, `if`) with checkable challenges.
+A **2-player** kid-friendly Python coding duel (same laptop).
 
 ## Play
 
-Open [`index.html`](index.html) in your browser (double-click the file, or use Live Server).
+Open [`index.html`](index.html) in your browser.
 
-No install needed — it is plain HTML, CSS, and JavaScript.
+1. Enter two player names  
+2. Hit **Start the race**  
+3. Both type the Python answer — **first correct submit wins the round**  
+4. First snake to **5 points** wins  
 
-## Lessons
+## What’s inside
 
-1. **print()** — show a message
-2. **Variables** — named boxes for values
-3. **if** — run code when something is true
+- Hot-seat race (one keyboard, two players)
+- Snake track progress bar
+- Randomized rounds: `print`, variables, math, `if`, boss round
+- Confetti on victory
 
-Earn stars as you solve each challenge.
+No install — plain HTML, CSS, and JavaScript.
